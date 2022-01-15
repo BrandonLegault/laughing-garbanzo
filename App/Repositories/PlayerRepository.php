@@ -66,6 +66,31 @@ class PlayerRepository implements IDataSource {
         $file = file_get_contents($filename);
         return $file;
     }
+
+    function writePlayerArray($player): void
+    {
+        $this->playersArray[] = $player;
+    }
+
+    function writePlayerJSON($player): void
+    {
+        $this->playersArray = [];
+        if ($this->playerJsonString) {
+            $this->playersArray = json_decode($this->playerJsonString); // convert to array of stdClass objects
+        }
+        $this->playersArray[] = $player;
+        $this->playerJsonString = json_encode($player); // convert back to json string
+    }
+
+    function writePlayerFile($filename, $player): void
+    {
+        $players = json_decode($this->getPlayerDataFromFile($filename)); // convert to array of stdClass objects
+        if (!$players) {
+            $players = [];
+        }
+        $players[] = $player->toSTDClass(); // to be able to write to file
+        file_put_contents($filename, json_encode($players)); // convert back to json string
+    }
 }
 
 

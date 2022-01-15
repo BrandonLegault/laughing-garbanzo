@@ -38,23 +38,13 @@ class PlayerController implements IReadWritePlayers {
     {
         switch ($source) {
             case 'array':
-                $this->repository->playersArray[] = $player;
+                $this->repository->writePlayerArray($player);
                 break;
             case 'json':
-                $this->repository->playersArray = [];
-                if ($this->repository->playerJsonString) {
-                    $this->repository->playersArray = json_decode($this->repository->playerJsonString); // convert to array of stdClass objects
-                }
-                $this->repository->playersArray[] = $player;
-                $this->repository->playerJsonString = json_encode($player); // convert back to json string
+                $this->repository->writePlayerJSON($player);
                 break;
             case 'file':
-                $players = json_decode($this->repository->getPlayerDataFromFile($filename)); // convert to array of stdClass objects
-                if (!$players) {
-                    $players = [];
-                }
-                $players[] = $player->toSTDClass(); // to be able to write to file
-                file_put_contents($filename, json_encode($players)); // convert back to json string
+                $this->repository->writePlayerFile($filename, $player);
                 break;
         }
     }
