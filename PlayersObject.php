@@ -62,7 +62,7 @@ class PlayersObject implements IReadWritePlayers {
             $playerData = json_decode($playerData);
         }
 
-        return $playerData;
+        return $playerData; // array of stdClass objects
 
     }
 
@@ -79,18 +79,18 @@ class PlayersObject implements IReadWritePlayers {
             case 'json':
                 $players = [];
                 if ($this->playerJsonString) {
-                    $players = json_decode($this->playerJsonString);
+                    $players = json_decode($this->playerJsonString); // convert to array of stdClass objects
                 }
                 $players[] = $player;
-                $this->playerJsonString = json_encode($player);
+                $this->playerJsonString = json_encode($player); // convert back to json string
                 break;
             case 'file':
-                $players = json_decode($this->getPlayerDataFromFile($filename));
+                $players = json_decode($this->getPlayerDataFromFile($filename)); // convert to array of stdClass objects
                 if (!$players) {
                     $players = [];
                 }
                 $players[] = $player;
-                file_put_contents($filename, json_encode($players));
+                file_put_contents($filename, json_encode($players)); // convert back to json string
                 break;
         }
     }
