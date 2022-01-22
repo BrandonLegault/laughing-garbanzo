@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\Display\DisplayCLI;
+use App\Helpers\Display\DisplayWeb;
 use App\Models\Player;
 use App\Repositories\PlayerRepository;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +17,9 @@ class PlayerControllerTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         $playerRepository = new PlayerRepository();
-        self::$playerController = new PlayerController($playerRepository);
+        $display = php_sapi_name() === 'cli' ? new DisplayCLI() : new DisplayWeb();
+        self::$playerController = new PlayerController($playerRepository, $display);
+
         self::$jsonFilePath = dirname(getcwd()) . "\\Resources\\" . self::$JSON_FILENAME;
     }
 

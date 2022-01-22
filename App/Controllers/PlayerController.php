@@ -2,14 +2,16 @@
 declare(strict_types=1);
 namespace App\Controllers;
 
+use App\Helpers\Display\IDisplay;
 use App\Repositories\PlayerRepository;
-use App\Helpers\View;
 
 class PlayerController implements IReadWritePlayers {
     private $repository;
+    private $display;
 
-    public function __construct(PlayerRepository $repository) {
+    public function __construct(PlayerRepository $repository, IDisplay $display) {
         $this->repository = $repository;
+        $this->display = $display;
     }
 
     function readPlayers($source, $filename = null): array
@@ -49,23 +51,10 @@ class PlayerController implements IReadWritePlayers {
         }
     }
 
-    function display($isCLI, $source, $filename = null): void
+    function display($source, $filename = null): void
     {
         $players = $this->readPlayers($source, $filename);
-
-        if ($isCLI) {
-            echo "Current Players: \n";
-            foreach ($players as $player) {
-                echo "\tName: {$player->getName()}\n";
-                echo "\tAge: {$player->getAge()}\n";
-                echo "\tSalary: {$player->getSalary()}\n";
-                echo "\tJob: {$player->getJob()}\n\n";
-            }
-        } else { // web
-            $view = new View('players');
-            $view->set('players', $players);
-            $view->render();
-        }
+        $this->display->displayPlayers($players);
     }
 
     public function getRepository(): PlayerRepository
